@@ -4,7 +4,11 @@
     "baseUrl": "./",
     "rootDir": "src",
     "outDir": "./dist",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": [
+      "node",
+      "jest"
+    ]
   },
   "include": [
     "src/**/*"
@@ -12,7 +16,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "test",
-    "**/*spec.ts"
+    "test"
   ]
 }
