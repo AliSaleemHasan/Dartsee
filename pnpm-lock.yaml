@@ -11,6 +11,9 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:packages/eslint-config
+      '@repo/prisma':
+        specifier: workspace:*
+        version: link:packages/prisma
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:packages/typescript-config
@@ -26,6 +29,9 @@ importers:
       '@nestjs/common':
         specifier: ^11.1.11
         version: 11.1.11(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/config':
+        specifier: ^4.0.3
+        version: 4.0.3(@nestjs/common@11.1.11)(rxjs@7.8.2)
       '@nestjs/core':
         specifier: ^11.1.11
         version: 11.1.11(@nestjs/common@11.1.11)(@nestjs/platform-express@11.1.11)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -35,9 +41,6 @@ importers:
       '@prisma/adapter-better-sqlite3':
         specifier: ^7.4.2
         version: 7.4.2
-      '@prisma/client':
-        specifier: ^7.4.2
-        version: 7.4.2(prisma@7.4.2)(typescript@5.5.4)
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
@@ -69,6 +72,9 @@ importers:
       '@repo/jest-config':
         specifier: workspace:*
         version: link:../../packages/jest-config
+      '@repo/prisma':
+        specifier: workspace:*
+        version: link:../../packages/prisma
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -93,9 +99,6 @@ importers:
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@22.19.3)(ts-node@10.9.2)
-      prisma:
-        specifier: ^7.4.2
-        version: 7.4.2(@types/react@19.2.14)(react-dom@19.2.3)(react@19.2.3)(typescript@5.5.4)
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -223,6 +226,25 @@ importers:
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
+
+  packages/prisma:
+    dependencies:
+      '@prisma/client':
+        specifier: ^7.4.2
+        version: 7.4.2(prisma@7.4.2)(typescript@5.5.4)
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      dotenv:
+        specifier: ^17.3.1
+        version: 17.3.1
+      prisma:
+        specifier: ^7.4.2
+        version: 7.4.2(@types/react@19.2.14)(react-dom@19.2.3)(react@19.2.3)(typescript@5.5.4)
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
 
   packages/typescript-config: {}
 
@@ -2120,6 +2142,19 @@ packages:
       uid: 2.0.2
     transitivePeerDependencies:
       - supports-color
+
+  /@nestjs/config@4.0.3(@nestjs/common@11.1.11)(rxjs@7.8.2):
+    resolution: {integrity: sha512-FQ3M3Ohqfl+nHAn5tp7++wUQw0f2nAk+SFKe8EpNRnIifPqvfJP6JQxPKtFLMOHbyer4X646prFG4zSRYEssQQ==}
+    peerDependencies:
+      '@nestjs/common': ^10.0.0 || ^11.0.0
+      rxjs: ^7.1.0
+    dependencies:
+      '@nestjs/common': 11.1.11(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      dotenv: 17.2.3
+      dotenv-expand: 12.0.3
+      lodash: 4.17.23
+      rxjs: 7.8.2
+    dev: false
 
   /@nestjs/core@11.1.11(@nestjs/common@11.1.11)(@nestjs/platform-express@11.1.11)(reflect-metadata@0.2.2)(rxjs@7.8.2):
     resolution: {integrity: sha512-H9i+zT3RvHi7tDc+lCmWHJ3ustXveABCr+Vcpl96dNOxgmrx4elQSTC4W93Mlav2opfLV+p0UTHY6L+bpUA4zA==}
@@ -4577,6 +4612,13 @@ packages:
       esutils: 2.0.3
     dev: true
 
+  /dotenv-expand@12.0.3:
+    resolution: {integrity: sha512-uc47g4b+4k/M/SeaW1y4OApx+mtLWl92l5LMPP0GNXctZqELk+YGgOPIIC5elYmUH4OuoK3JLhuRUYegeySiFA==}
+    engines: {node: '>=12'}
+    dependencies:
+      dotenv: 16.6.1
+    dev: false
+
   /dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
@@ -4586,10 +4628,14 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
+  /dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
+    engines: {node: '>=12'}
+    dev: false
+
   /dotenv@17.3.1:
     resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
     engines: {node: '>=12'}
-    dev: false
 
   /dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -6749,6 +6795,10 @@ packages:
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
+  /lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+    dev: false
+
   /log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
@@ -8694,6 +8744,7 @@ packages:
   /typescript@5.5.4:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
+    hasBin: true
 
   /typescript@5.8.2:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}

@@ -1,4 +1,4 @@
-import { Controller, Get, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Query, ParseIntPipe, DefaultValuePipe, Param } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
 
@@ -13,5 +13,15 @@ export class GamesController {
     ) {
         const pagination = new PaginationQueryDto(page, limit);
         return this.gamesService.findAll(pagination);
+    }
+
+    @Get('statistics/popularity')
+    getPopularityStatistics() {
+        return this.gamesService.getPopularityStatistics();
+    }
+
+    @Get(':id')
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.gamesService.findOne(id);
     }
 }

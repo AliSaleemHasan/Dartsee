@@ -1,5 +1,5 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '../generated/prisma/client';
+import { Injectable, OnModuleInit, OnModuleDestroy, InternalServerErrorException } from '@nestjs/common';
+import { PrismaClient } from '@repo/prisma';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import * as path from 'path';
 
@@ -9,7 +9,11 @@ export class DatabaseService
     implements OnModuleInit, OnModuleDestroy {
 
     constructor() {
-        const dbPath = path.join(process.cwd(), 'prisma/dev.db');
+        const dbUrl = process.env.DATABASE_URL;
+        if (!dbUrl) {
+            throw new InternalServerErrorException("Please provide Database_URL in .env")
+        }
+        const dbPath = dbUrl.replace('file:', '');
         const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
         super({ adapter });
     }

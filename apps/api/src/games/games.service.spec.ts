@@ -7,6 +7,8 @@ const mockDatabaseService = {
     game: {
         findMany: jest.fn<any>(),
         count: jest.fn<any>(),
+        findUnique: jest.fn<any>(),
+        groupBy: jest.fn<any>(),
     },
 };
 
@@ -43,5 +45,65 @@ describe('GamesService', () => {
         expect(result.meta.page).toBe(1);
         expect(result.meta.limit).toBe(2);
         expect(result.meta.totalPages).toBe(50);
+    });
+
+    it('should return a game with player statistics', async () => {
+        const mockGame = {
+            id: 1,
+            type: 'x01',
+            game_players: [
+                { player_id: 'p1', player: { id: 'p1', name: 'Alice' } },
+                { player_id: 'p2', player: { id: 'p2', name: 'Bob' } }
+            ],
+            throws: [
+                { player_id: 'p1', score: 20, modifier: 1 },
+                { player_id: 'p1', score: 20, modifier: 1 },
+                { player_id: 'p1', score: 20, modifier: 1 },
+                { player_id: 'p2', score: 0, modifier: 0 },
+                { player_id: 'p2', score: 10, modifier: 1 },
+                { player_id: 'p2', score: 10, modifier: 1 },
+            ]
+        };
+
+        (mockDatabaseService.game.findUnique as any).mockResolvedValue(mockGame);
+
+        const result = await service.findOne(1);
+
+        expect(result).toBeDefined();
+        // @ts-ignore
+        expect(result.id).toBe(1);
+        // @ts-ignore
+        expect(result.players).toHaveLength(2);
+
+        // @ts-ignore
+        const alice = result.players.find(p => p.id === 'p1')!;
+        expect(alice.averageScorePerRound).toEqual([60]);
+        expect(alice.misses).toBe(0);
+
+        // @ts-ignore
+        const bob = result.players.find(p => p.id === 'p2')!;
+        expect(bob.averageScorePerRound).toEqual([20]);
+        expect(bob.misses).toBe(1);
+    });
+
+    it('should throw Exception if game does not exist', async () => {
+        (mockDatabaseService.game.findUnique as any).mockResolvedValue(null);
+        await expect(service.findOne(999)).rejects.toThrow();
+    });
+
+    it('should return game popularity statistics', async () => {
+        const mockStats = [
+            { type: 'x01', _count: { id: 10 } },
+            { type: 'cricket', _count: { id: 5 } },
+        ];
+        (mockDatabaseService.game.groupBy as any).mockResolvedValue(mockStats);
+
+        const result = await service.getPopularityStatistics();
+
+        expect(result).toHaveLength(2);
+        expect(result).toEqual([
+            { gametype: 'x01', count: 10 },
+            { gametype: 'cricket', count: 5 },
+        ]);
     });
 });
