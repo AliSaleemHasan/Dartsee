@@ -1,6 +1,15 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "strictNullChecks": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "module": "NodeNext"
   }
 }
