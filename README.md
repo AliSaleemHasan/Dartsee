@@ -1,124 +1,72 @@
-# Turborepo starter
+# Dartsee
 
-This is a community-maintained example. If you experience a problem, please submit a pull request with a fix. GitHub Issues will be closed.
+## Overview
 
-## Using this example
+This repository contains the full-stack Dartsee application. It is structured as a monorepo using Turborepo and pnpm. 
+- **Backend:** NestJS (located in `apps/api`)
+- **Frontend:** React / Next.js (located in `apps/web`)
+- **Database:** SQLite with Prisma ORM
 
-Run the following command:
+## Prerequisites
 
-```bash
-npx create-turbo@latest -e with-nestjs
-```
+- [Node.js](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
 
-## What's inside?
+## Database Setup
 
-This Turborepo includes the following packages & apps:
+The SQLite database has been decoupled from the API package and is strictly managed within the root `/database` directory.
 
-### Apps and Packages
+To initialize the local SQLite database, the raw SQL dump files must first be placed in the `/database` directory:
+1. Ensure `schema.sql` is present in `/database`.
+2. Ensure `data.sql` is present in `/database`.
 
-```shell
-.
-├── apps
-│   ├── api                       # NestJS app (https://nestjs.com).
-│   └── web                       # Next.js app (https://nextjs.org).
-└── packages
-    ├── @repo/api                 # Shared `NestJS` resources.
-    ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
-    ├── @repo/jest-config         # `jest` configurations
-    ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
-    └── @repo/ui                  # Shareable stub React component library.
-```
-
-Each package and application are mostly written in [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This `Turborepo` has some additional tools already set for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type-safety
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-- [Jest](https://prettier.io) & [Playwright](https://playwright.dev/) for testing
-
-### Commands
-
-This `Turborepo` already configured useful commands for all your apps and packages.
-
-#### Build
+Once the files are present, make the setup script executable and run it from the root of the Turborepo project:
 
 ```bash
-# Will build all the app & packages with the supported `build` script.
-pnpm run build
-
-# ℹ️ If you plan to only build apps individually,
-# Please make sure you've built the packages first.
+chmod +x setup.sh
+./setup.sh
 ```
 
-#### Develop
+**The setup script performs the following background tasks:**
+- Installs the `sqlite3` CLI tool on the native system if it is not already present.
+- Deletes any existing `dev.db` to prevent corrupted states.
+- Creates a fresh `dev.db` database inside the `/database` directory.
+- Imports `schema.sql` to construct the tables.
+- Leverages a custom, temporary `fast-import.sql` script (using `MEMORY` journal mode) to ingest the massive `data.sql` file efficiently.
+- Automatically generates `.env` files precisely mapped to the local machine's absolute paths inside both `apps/api` and `packages/prisma`.
+- Executes `prisma:generate` across the workspace to compile the Prisma Client.
+
+## Running the Application
+
+After the setup script finishes successfully, install all dependencies if not already done:
 
 ```bash
-# Will run the development server for all the app & packages with the supported `dev` script.
-pnpm run dev
+pnpm install
 ```
 
-#### test
+Start the development servers for all applications and packages:
 
 ```bash
-# Will launch a test suites for all the app & packages with the supported `test` script.
-pnpm run test
-
-# You can launch e2e testes with `test:e2e`
-pnpm run test:e2e
-
-# See `@repo/jest-config` to customize the behavior.
+pnpm turbo run dev
 ```
 
-#### Lint
+### Running the API individually
+If only the backend NestJS service is needed:
 
 ```bash
-# Will lint all the app & packages with the supported `lint` script.
-# See `@repo/eslint-config` to customize the behavior.
-pnpm run lint
+pnpm turbo run dev --filter=api
 ```
 
-#### Format
+### Building the Project
+To build all applications and packages:
 
 ```bash
-# Will format all the supported `.ts,.js,json,.tsx,.jsx` files.
-# See `@repo/eslint-config/prettier-base.js` to customize the behavior.
-pnpm format
+pnpm turbo run build
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+### Running Tests
+To execute the test suites:
 
 ```bash
-npx turbo login
+pnpm turbo run test
 ```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```bash
-npx turbo link
-```
-
-## Useful Links
-
-This example take some inspiration the [with-nextjs](https://github.com/vercel/turborepo/tree/main/examples/with-nextjs) `Turbo` example and [01-cats-app](https://github.com/nestjs/nest/tree/master/sample/01-cats-app) `NestJs` sample.
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
