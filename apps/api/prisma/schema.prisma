@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model GamePlayer {
+  id        String  @id
+  game_id   Int
+  player_id String?
+
+  game   Game    @relation(fields: [game_id], references: [id])
+  player Player? @relation(fields: [player_id], references: [id])
+
+  @@map("game_players")
+}
+
+model Game {
+  id           Int          @id @default(autoincrement())
+  type         String?
+  game_players GamePlayer[]
+  throws       Throw[]
+
+  @@map("games")
+}
+
+model Player {
+  id           String       @id
+  name         String?
+  game_players GamePlayer[]
+  throws       Throw[]
+
+  @@map("players")
+}
+
+model Throw {
+  id        Int     @id @default(autoincrement())
+  game_id   Int?
+  player_id String?
+  score     Int?
+  modifier  Int?
+  x         Int?
+  y         Int?
+
+  game   Game?   @relation(fields: [game_id], references: [id])
+  player Player? @relation(fields: [player_id], references: [id])
+
+  @@map("throws")
+}

@@ -11,5 +11,13 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "module": "NodeNext"
-  }
+  },
+  "include": [],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/out",
+    "**/.next",
+    "**/src/generated/prisma"
+  ]
 }

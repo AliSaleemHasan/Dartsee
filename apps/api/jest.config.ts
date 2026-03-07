@@ -1,3 +1,6 @@
 import { nestConfig } from '@repo/jest-config';
 
-export default nestConfig;
+export default {
+    ...nestConfig,
+    coveragePathIgnorePatterns: ['/node_modules/', '/generated/'],
+};
