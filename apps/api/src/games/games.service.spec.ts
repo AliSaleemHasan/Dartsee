@@ -77,13 +77,23 @@ describe('GamesService', () => {
 
         // @ts-ignore
         const alice = result.players.find(p => p.id === 'p1')!;
-        expect(alice.averageScorePerRound).toEqual([60]);
-        expect(alice.misses).toBe(0);
+        expect(alice.isWinner).toBe(true);
+        expect(alice.stats.averageScorePerRound).toEqual(60);
+        expect(alice.stats.totalScore).toEqual(60);
+        expect(alice.stats.bestRoundScore).toEqual(60);
+        expect(alice.stats.misses).toBe(0);
+        expect(alice.rounds).toHaveLength(1);
+        expect(alice.rounds[0]?.throws).toEqual(['20', '20', '20']);
 
         // @ts-ignore
         const bob = result.players.find(p => p.id === 'p2')!;
-        expect(bob.averageScorePerRound).toEqual([20]);
-        expect(bob.misses).toBe(1);
+        expect(bob.isWinner).toBe(false);
+        expect(bob.stats.averageScorePerRound).toEqual(20);
+        expect(bob.stats.totalScore).toEqual(20);
+        expect(bob.stats.bestRoundScore).toEqual(20);
+        expect(bob.stats.misses).toBe(1);
+        expect(bob.rounds).toHaveLength(1);
+        expect(bob.rounds[0]?.score).toEqual(20);
     });
 
     it('should throw Exception if game does not exist', async () => {

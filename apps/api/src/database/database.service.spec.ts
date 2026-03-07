@@ -5,6 +5,7 @@ describe('DatabaseService', () => {
     let service: DatabaseService;
 
     beforeAll(async () => {
+        process.env.DATABASE_URL = "file:dummy.db";
         const module: TestingModule = await Test.createTestingModule({
             providers: [DatabaseService],
         }).compile();
@@ -14,9 +15,5 @@ describe('DatabaseService', () => {
 
     it('should be defined', () => {
         expect(service).toBeDefined();
-    });
-
-    afterAll(async () => {
-        await service.onModuleDestroy();
     });
 });

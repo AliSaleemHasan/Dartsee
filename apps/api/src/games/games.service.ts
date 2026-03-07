@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
 import { PaginatedResponseDto } from '../shared/dto/paginated-response.dto';
 import { Game, Player, Throw } from '@repo/prisma';
+import { calculateThrowScore, formatThrow, chunkArray } from '../shared/utils/scoring.util';
 
 @Injectable()
 export class GamesService {
@@ -43,18 +44,60 @@ export class GamesService {
         };
     }
 
-    private calculatePlayerStats(player: Player, playerThrows: Throw[]) {
+    private groupThrowsByPlayer(throws: Throw[]): Record<string, Throw[]> {
+        return throws.reduce((acc, t) => {
+            if (t.player_id) {
+                acc[t.player_id] ??= [];
+                acc[t.player_id]!.push(t);
+            }
+            return acc;
+        }, {} as Record<string, Throw[]>);
+    }
 
-        const totalThrows = playerThrows.length;
-        const totalScore = playerThrows.reduce((sum, t) => sum + (t.score || 0) * (t.modifier || 0), 0);
-        const rounds = totalThrows / 3;
-        const misses = playerThrows.filter((t) => t.modifier === 0).length;
+    private calculatePlayerStats(player: Player, playerThrows: Throw[]) {
+        let misses = 0;
+        let bestRoundScore = 0;
+        let totalScore = 0;
+
+        const roundChunks = chunkArray(playerThrows, 3);
+
+        const rounds = roundChunks.map((chunk, index) => {
+            let roundScore = 0;
+            const throws = chunk.map((t) => {
+                if (t.modifier === 0) misses++;
+
+                const score = calculateThrowScore(t);
+                roundScore += score;
+                totalScore += score;
+
+                return formatThrow(t);
+            });
+
+            if (roundScore > bestRoundScore) bestRoundScore = roundScore;
+
+            return {
+                roundNumber: index + 1,
+                throws,
+                score: roundScore,
+            };
+        });
+
+        const roundCount = Math.max(rounds.length, 1);
+        const averageScorePerRound = playerThrows.length > 0
+            ? Number((totalScore / roundCount).toFixed(2))
+            : 0;
 
         return {
             id: player.id,
             name: player.name,
-            averageScorePerRound: rounds > 0 ? Number((totalScore / rounds).toFixed(2)) : 0,
-            misses,
+            stats: {
+                averageScorePerRound,
+                misses,
+                totalScore,
+                bestRoundScore,
+            },
+            rounds,
+            _rawTotalScore: totalScore
         };
     }
 
@@ -63,31 +106,27 @@ export class GamesService {
             where: { id },
             include: {
                 game_players: {
-                    include: {
-                        player: true,
-                    },
+                    include: { player: true },
                 },
                 throws: true,
             },
         });
 
-        if (!game) {
-            throw new NotFoundException(`Game with ID ${id} not found`);
-        }
+        if (!game) throw new NotFoundException(`Game with ID ${id} not found`);
 
-        const throwsByPlayerId = game.throws.reduce((acc, t) => {
-            if (t.player_id) {
-                if (!acc[t.player_id]) acc[t.player_id] = [];
-                acc[t.player_id]!.push(t);
-            }
-            return acc;
-        }, {} as Record<string, typeof game.throws>);
+        const throwsByPlayerId = this.groupThrowsByPlayer(game.throws);
 
-        const players = game.game_players.map((gp) => {
-            if (!gp.player) return null;
+        // Map players and remove any invalid (null) records immediately
+        const playersWithStats = game.game_players
+            .map((gp) => gp.player ? this.calculatePlayerStats(gp.player, throwsByPlayerId[gp.player_id!] || []) : null)
+            .filter((p): p is NonNullable<typeof p> => p !== null);
 
-            return this.calculatePlayerStats(gp.player, throwsByPlayerId[gp.player_id!] || []);
-        });
+        const highestScore = Math.max(...playersWithStats.map(p => p._rawTotalScore), -1);
+
+        const players = playersWithStats.map(({ _rawTotalScore, ...p }) => ({
+            ...p,
+            isWinner: p.id !== null && _rawTotalScore === highestScore && _rawTotalScore > 0,
+        }));
 
         return {
             id: game.id,
@@ -104,12 +143,9 @@ export class GamesService {
             },
         });
 
-        return stats.map(stat => ({
+        return stats.map((stat) => ({
             gametype: stat.type || 'Unknown',
             count: stat._count.id,
         }));
     }
-
-
-
 }
