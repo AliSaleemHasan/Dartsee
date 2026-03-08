@@ -25,11 +25,6 @@
     },
     "test": {},
     "test:e2e": {},
-    "prisma:generate": {
-      "dependsOn": [
-        "prisma:migrate"
-      ]
-    },
-    "prisma:migrate": {}
+    "prisma:generate": {}
   }
 }
