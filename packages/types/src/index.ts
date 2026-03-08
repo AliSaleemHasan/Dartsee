@@ -31,4 +31,19 @@ export interface PaginationQuery {
     limit?: number;
 }
 
+export interface TopPlayerStat {
+    playerId: string;
+    playerName: string;
+    tripleRate: number;
+    doubleRate: number;
+    missRate: number;
+}
+
+export interface GameTypePerformanceStat {
+    gameType: string;
+    avgScorePerThrow: number;
+    missRate: number;
+    tripleRate: number;
+}
+
 // Feel free to move other interfaces (GameDetail, PlayerStats, etc.) here in the future!

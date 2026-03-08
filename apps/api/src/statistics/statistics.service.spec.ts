@@ -7,6 +7,7 @@ const mockDatabaseService = {
   game: {
     groupBy: jest.fn<any>(),
   },
+  $queryRaw: jest.fn<any>(),
 };
 
 describe('StatisticsService', () => {
@@ -41,5 +42,39 @@ describe('StatisticsService', () => {
       { gametype: 'x01', count: 10 },
       { gametype: 'cricket', count: 5 },
     ]);
+  });
+
+  it('should return top 5 players based on triple rate', async () => {
+    const rawSqlMocks = [
+      {
+        playerId: 'uid-1',
+        playerName: 'Michael van Gerwen',
+        tripleRate: 28.4,
+        doubleRate: 18.9,
+        missRate: 0.9,
+      },
+    ];
+    mockDatabaseService.$queryRaw.mockResolvedValue(rawSqlMocks);
+
+    const result = await service.getTopPlayers();
+
+    expect(result).toHaveLength(1);
+    expect(result[0].playerName).toBe('Michael van Gerwen');
+    expect(result[0].tripleRate).toBe(28.4);
+    expect(mockDatabaseService.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return game type performance averages', async () => {
+    const rawSqlMocks = [
+      { gameType: '501', avgScorePerThrow: 30.5, missRate: 1.2, tripleRate: 15.4 },
+    ];
+    mockDatabaseService.$queryRaw.mockResolvedValue(rawSqlMocks);
+
+    const result = await service.getPerformanceByGameType();
+
+    expect(result).toHaveLength(1);
+    expect(result[0].gameType).toBe('501');
+    expect(result[0].avgScorePerThrow).toBe(30.5);
+    expect(mockDatabaseService.$queryRaw).toHaveBeenCalledTimes(2); // Accounts for both previous test and this test since it's the exact same mock function
   });
 });

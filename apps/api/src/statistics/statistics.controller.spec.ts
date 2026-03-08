@@ -5,6 +5,8 @@ import { StatisticsService } from './statistics.service';
 
 const mockStatisticsService = {
   getPopularityStatistics: jest.fn<any>(),
+  getTopPlayers: jest.fn<any>(),
+  getPerformanceByGameType: jest.fn<any>(),
 };
 
 describe('StatisticsController', () => {
@@ -25,13 +27,24 @@ describe('StatisticsController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should call getPopularityStatistics on the service', async () => {
-    const stats = [{ gametype: 'cricket', count: 12 }];
-    mockStatisticsService.getPopularityStatistics.mockResolvedValue(stats);
+  it('should call getTopPlayers on the service', async () => {
+    const stats = [{ playerId: 'uid1', playerName: 'Alice', tripleRate: 20, doubleRate: 15, missRate: 1 }];
+    mockStatisticsService.getTopPlayers.mockResolvedValue(stats);
 
-    const result = await controller.getPopularityStatistics();
+    const result = await controller.getTopPlayers();
 
     expect(result).toEqual(stats);
-    expect(mockStatisticsService.getPopularityStatistics).toHaveBeenCalledTimes(1);
+    expect(mockStatisticsService.getTopPlayers).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call getPerformanceByGameType on the service', async () => {
+    const stats = [{ gameType: 'Cricket', avgScorePerThrow: 18, missRate: 2, tripleRate: 12 }];
+    mockStatisticsService.getPerformanceByGameType.mockResolvedValue(stats);
+
+    const result = await controller.getPerformanceByGameType();
+
+    expect(result).toEqual(stats);
+    expect(mockStatisticsService.getPerformanceByGameType).toHaveBeenCalledTimes(1);
   });
 });
+
