@@ -11,6 +11,10 @@ export class PaginationQueryDto implements PaginationQuery {
     @Min(1)
     readonly page: number = 1;
 
+    @ApiPropertyOptional({ description: 'Filter by game type.' })
+    @IsOptional()
+    readonly type?: string;
+
     @ApiPropertyOptional({ description: 'The number of games per page.', minimum: 1, maximum: 100, default: 20 })
     @IsOptional()
     @Type(() => Number)

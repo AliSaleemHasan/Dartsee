@@ -12,8 +12,11 @@ export class GamesService {
     async findAll(
         pagination: PaginationQueryDto,
     ): Promise<PaginatedResponseDto<Game>> {
+        const whereClause = pagination.type ? { type: pagination.type } : {};
+
         const [data, total] = await Promise.all([
             this.db.game.findMany({
+                where: whereClause,
                 skip: pagination.skip,
                 take: pagination.limit,
                 orderBy: { id: 'asc' },
@@ -30,7 +33,7 @@ export class GamesService {
                     },
                 },
             }),
-            this.db.game.count(),
+            this.db.game.count({ where: whereClause }),
         ]);
 
         return {
