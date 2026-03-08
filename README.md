@@ -4,7 +4,7 @@
 
 This repository contains the full-stack Dartsee application. It is structured as a monorepo using Turborepo and pnpm. 
 - **Backend:** NestJS (located in `apps/api`)
-- **Frontend:** React / Next.js (located in `apps/web`)
+- **Frontend:** React (located in `apps/web`)
 - **Database:** SQLite with Prisma ORM
 
 ## Prerequisites
