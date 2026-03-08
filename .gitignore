@@ -62,4 +62,5 @@ pnpm-debug.log*
 .DS_Store
 *.pem
 
-/database/*
+database/*
+!database/README.md
