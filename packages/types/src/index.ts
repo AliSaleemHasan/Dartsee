@@ -26,4 +26,9 @@ export interface PaginatedResponse<T> {
     };
 }
 
+export interface PaginationQuery {
+    page?: number;
+    limit?: number;
+}
+
 // Feel free to move other interfaces (GameDetail, PlayerStats, etc.) here in the future!
