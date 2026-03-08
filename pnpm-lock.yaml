@@ -75,6 +75,9 @@ importers:
       '@repo/prisma':
         specifier: workspace:*
         version: link:../../packages/prisma
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -123,6 +126,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -242,6 +248,15 @@ importers:
       prisma:
         specifier: ^7.4.2
         version: 7.4.2(@types/react@19.2.14)(react-dom@19.2.3)(react@19.2.3)(typescript@5.5.4)
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+
+  packages/types:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       typescript:
         specifier: 5.5.4
         version: 5.5.4
