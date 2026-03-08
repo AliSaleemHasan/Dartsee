@@ -134,18 +134,4 @@ export class GamesService {
             players,
         };
     }
-
-    async getPopularityStatistics() {
-        const stats = await this.db.game.groupBy({
-            by: ['type'],
-            _count: {
-                id: true,
-            },
-        });
-
-        return stats.map((stat) => ({
-            gametype: stat.type || 'Unknown',
-            count: stat._count.id,
-        }));
-    }
 }

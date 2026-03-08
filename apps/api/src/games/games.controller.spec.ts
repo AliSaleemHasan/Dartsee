@@ -31,7 +31,7 @@ describe('GamesController', () => {
     });
 
     it('should return paginated games', async () => {
-        const result = await controller.findAll(1, 20);
+        const result = await controller.findAll({ page: 1, limit: 20, skip: 0 });
 
         expect(result).toEqual(mockPaginatedResponse);
         expect(mockGamesService.findAll).toHaveBeenCalled();
@@ -51,15 +51,5 @@ describe('GamesController', () => {
 
         expect(result).toEqual(mockGameDetail);
         expect(mockGamesService.findOne).toHaveBeenCalledWith(1);
-    });
-
-    it('should return popularity statistics', async () => {
-        const stats = [{ gametype: 'x01', count: 10 }];
-        mockGamesService.getPopularityStatistics.mockResolvedValue(stats);
-
-        const result = await controller.getPopularityStatistics();
-
-        expect(result).toEqual(stats);
-        expect(mockGamesService.getPopularityStatistics).toHaveBeenCalled();
     });
 });

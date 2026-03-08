@@ -100,20 +100,4 @@ describe('GamesService', () => {
         (mockDatabaseService.game.findUnique as any).mockResolvedValue(null);
         await expect(service.findOne(999)).rejects.toThrow();
     });
-
-    it('should return game popularity statistics', async () => {
-        const mockStats = [
-            { type: 'x01', _count: { id: 10 } },
-            { type: 'cricket', _count: { id: 5 } },
-        ];
-        (mockDatabaseService.game.groupBy as any).mockResolvedValue(mockStats);
-
-        const result = await service.getPopularityStatistics();
-
-        expect(result).toHaveLength(2);
-        expect(result).toEqual([
-            { gametype: 'x01', count: 10 },
-            { gametype: 'cricket', count: 5 },
-        ]);
-    });
 });

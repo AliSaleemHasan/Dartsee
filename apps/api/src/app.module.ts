@@ -5,13 +5,15 @@ import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './games/games.module';
 import { ConfigModule } from '@nestjs/config';
 import { HeatmapModule } from './heatmap/heatmap.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     GamesModule,
-    HeatmapModule
+    HeatmapModule,
+    StatisticsModule
   ],
   controllers: [AppController],
   providers: [AppService],
