@@ -13,6 +13,7 @@
     "module": "NodeNext"
   },
   "include": [],
+  "files": [],
   "exclude": [
     "node_modules",
     "**/dist",
