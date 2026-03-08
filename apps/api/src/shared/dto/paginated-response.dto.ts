@@ -1,9 +1,13 @@
-export interface PaginatedResponseDto<T> {
-    data: T[];
-    meta: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
+import { PaginatedResponse } from '@repo/types';
+
+export class PaginatedMetaDto {
+    total!: number;
+    page!: number;
+    limit!: number;
+    totalPages!: number;
+}
+
+export class PaginatedResponseDto<T> implements PaginatedResponse<T> {
+    data!: T[];
+    meta!: PaginatedMetaDto;
 }
