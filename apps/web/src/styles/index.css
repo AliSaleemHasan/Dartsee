@@ -1,0 +1,23 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ── Dartsee custom scrollbar (matches "The Night Game" dark palette) ── */
+.dartsee-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 transparent;
+}
+.dartsee-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.dartsee-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dartsee-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #333333;
+  border-radius: 3px;
+}
+.dartsee-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555555;
+}

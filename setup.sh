@@ -34,10 +34,16 @@ if [ ! -f "data.sql" ]; then
 fi
 
 #
+# clean slate — remove any previous database
+#
+
+rm -f "$DB_PATH"
+
+#
 # now migrate schema to the database
 #
 
-sqlite3 $DB_PATH < schema.sql
+sqlite3 "$DB_PATH" < schema.sql
 
 # create a new fast-import script in database folder
 
@@ -62,7 +68,7 @@ fi
 # now import data using fast-import script
 #
 
-sqlite3 $DB_PATH < fast-import.sql
+sqlite3 "$DB_PATH" < fast-import.sql
 
 
 
@@ -82,10 +88,10 @@ PRISMA_ENV_PATH="./packages/prisma/.env"
 echo "DATABASE_URL=\"$DB_URL\"" > $PRISMA_ENV_PATH
 echo "Wrote DATABASE_URL to $PRISMA_ENV_PATH"
 
-# Generate Prisma client
-echo "Reset Migration if found"
+# Sync the Prisma schema without wiping the data, then compile the client
+echo "Syncing Prisma schema with existing database..."
 cd packages/prisma
-pnpm dlx prisma migrate reset
+pnpm dlx prisma db push --skip-generate
 
 echo ""
 echo "Generate Prisma client"
